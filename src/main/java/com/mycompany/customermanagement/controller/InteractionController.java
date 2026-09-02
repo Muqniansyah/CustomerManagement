@@ -15,7 +15,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -25,6 +27,7 @@ import javafx.stage.Stage;
 
 public class InteractionController implements Initializable {
     @FXML private TableView<Interaction> interactionTable;
+    @FXML private TableColumn<Interaction, String> colCustomer;
     @FXML private TableColumn<Interaction, String> colDate;
     @FXML private TableColumn<Interaction, String> colType;
     @FXML private TableColumn<Interaction, String> colDescription;
@@ -44,17 +47,21 @@ public class InteractionController implements Initializable {
         // Nama di dalam PropertyValueFactory harus sama dengan nama getter di Interaction.java
         // (tanpa kata "get" dan huruf pertama kecil) -- misal "interactionDate" -> getInteractionDate()
         colDate.setCellValueFactory(new PropertyValueFactory<>("interactionDate"));
+        colCustomer.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         colNotes.setCellValueFactory(new PropertyValueFactory<>("notes"));
  
         interactionTable.setItems(interactionData);
+        // fix kolom tiak konsisten
+        interactionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
  
         btnDelete.setOnAction(this::handleDelete);
         btnBack.setOnAction(this::handleBack);
  
-        btnAdd.setOnAction(e -> AlertUtil.showInfo("Form tambah interaksi belum dibuat."));
-        btnEdit.setOnAction(e -> AlertUtil.showInfo("Form edit interaksi belum dibuat."));
+        // pindah ke interaction-form.fxml
+        btnAdd.setOnAction(this::handleAdd);
+        btnEdit.setOnAction(this::handleEdit);
  
         loadData();
     }
@@ -76,6 +83,43 @@ public class InteractionController implements Initializable {
         if (confirmed) {
             interactionService.delete(selected.getId());
             loadData();
+        }
+    }
+    
+    private void handleAdd(ActionEvent event) {
+        navigateToForm(event, null);
+    }
+ 
+    private void handleEdit(ActionEvent event) {
+        Interaction selected = interactionTable.getSelectionModel().getSelectedItem();
+ 
+        if (selected == null) {
+            AlertUtil.showError("Pilih dulu data yang mau diedit.");
+            return;
+        }
+ 
+        navigateToForm(event, selected);
+    }
+ 
+    private void navigateToForm(ActionEvent event, Interaction interaction) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/interaction-form.fxml"));
+            Parent formRoot = loader.load();
+ 
+            InteractionFormController formController = loader.getController();
+ 
+            if (interaction != null) {
+                formController.setInteraction(interaction);
+            }
+ 
+            Scene formScene = new Scene(formRoot, 400, 600);
+ 
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(formScene);
+            stage.setTitle("Form Interaksi - Customer Management System");
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
  

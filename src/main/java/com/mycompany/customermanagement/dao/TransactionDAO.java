@@ -20,7 +20,12 @@ public class TransactionDAO {
  
         List<Transaction> transactions = new ArrayList<>();
  
-        String sql = "SELECT * FROM transactions ORDER BY transaction_date DESC";
+        // di-JOIN ke tabel customers supaya bisa ambil nama pelanggannya juga.
+        // "t." dan "c." itu alias -- cara singkat nyebut "transactions" dan "customers"
+        String sql = "SELECT t.*, c.name AS customer_name "
+                + "FROM transactions t "
+                + "JOIN customers c ON t.customer_id = c.id "
+                + "ORDER BY t.transaction_date DESC";
  
         // PERBAIKAN: getConnection() -> connect(), sama seperti DAO sebelumnya
         try (Connection conn = DatabaseConnection.connect();
@@ -38,15 +43,16 @@ public class TransactionDAO {
         return transactions;
     }
  
-    // Mengambil transaksi milik customer tertentu
+    // Mengambil transaksi milik customer tertentu (juga di-JOIN, untuk konsistensi)
     public List<Transaction> getByCustomerId(int customerId) {
  
         List<Transaction> transactions = new ArrayList<>();
  
-        // PERBAIKAN: text block -> string sambung (Java 11)
-        String sql = "SELECT * FROM transactions "
-                + "WHERE customer_id = ? "
-                + "ORDER BY transaction_date DESC";
+        String sql = "SELECT t.*, c.name AS customer_name "
+                + "FROM transactions t "
+                + "JOIN customers c ON t.customer_id = c.id "
+                + "WHERE t.customer_id = ? "
+                + "ORDER BY t.transaction_date DESC";
  
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -142,11 +148,7 @@ public class TransactionDAO {
  
     // Mengubah hasil database menjadi object Transaction
     private Transaction mapTransaction(ResultSet rs) throws Exception {
- 
-        // PERBAIKAN: urutan & jumlah parameter disamakan dengan constructor
-        // Transaction(id, customerId, transactionDate, totalAmount, paymentStatus, paymentProof, notes)
-        // yang ada di Transaction.java
-        return new Transaction(
+        Transaction transaction = new Transaction(
             rs.getInt("id"),
             rs.getInt("customer_id"),
             rs.getString("transaction_date"),
@@ -155,5 +157,10 @@ public class TransactionDAO {
             rs.getString("payment_proof"),
             rs.getString("notes")
         );
+ 
+        // PERBAIKAN: ambil "customer_name" hasil JOIN, taruh ke field tambahan
+        transaction.setCustomerName(rs.getString("customer_name"));
+ 
+        return transaction;
     }
 }

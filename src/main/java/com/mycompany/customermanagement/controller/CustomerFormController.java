@@ -19,6 +19,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -33,6 +35,16 @@ public class CustomerFormController implements Initializable{
     @FXML private TextArea notesField;
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
+    
+    // Label kecil di bawah tiap field, dipakai buat pesan error validasi.
+    // "managed=false" di FXML artinya defaultnya tidak makan tempat sama
+    // sekali (bukan cuma disembunyikan) -- baru muncul dan makan tempat
+    // waktu ada error yang perlu ditampilkan.
+    @FXML private Label nameError;
+    @FXML private Label phoneError;
+    @FXML private Label emailError;
+    @FXML private Label categoryError;
+    @FXML private Label statusError;
  
     private final CustomerService customerService = new CustomerService();
  
@@ -46,7 +58,7 @@ public class CustomerFormController implements Initializable{
  
         // Isi pilihan dropdown Kategori & Status -- sesuaikan nanti kalau
         // kamu mau tambah/ubah daftar pilihannya
-        categoryField.getItems().addAll("Reguler", "VIP", "Corporate");
+        categoryField.getItems().addAll("VIP", "Korporasi", "Langganan", "Baru", "Jarang");
         statusField.getItems().addAll("active", "inactive");
  
         btnSave.setOnAction(this::handleSave);
@@ -70,15 +82,48 @@ public class CustomerFormController implements Initializable{
  
     private void handleSave(ActionEvent event) {
  
-        // Validasi paling dasar -- Nama wajib diisi
+        // Bersihkan dulu semua tanda error dari percobaan submit sebelumnya
+        clearError(nameField, nameError);
+        clearError(phoneField, phoneError);
+        clearError(emailField, emailError);
+        clearError(categoryField, categoryError);
+        clearError(statusField, statusError);
+ 
+        boolean valid = true;
+ 
         if (nameField.getText() == null || nameField.getText().isBlank()) {
-            AlertUtil.showError("Nama pelanggan wajib diisi.");
-            return;
+            showError(nameField, nameError, "Nama wajib diisi.");
+            valid = false;
+        }
+ 
+        if (phoneField.getText() == null || phoneField.getText().isBlank()) {
+            showError(phoneField, phoneError, "Telepon wajib diisi.");
+            valid = false;
+        }
+ 
+        // Email boleh kosong, TAPI kalau diisi harus mengandung format wajar (ada '@' dan '.')
+        String email = emailField.getText();
+        if (email != null && !email.isBlank()
+                && (!email.contains("@") || !email.contains("."))) {
+            showError(emailField, emailError, "Format email tidak valid.");
+            valid = false;
+        }
+ 
+        if (categoryField.getValue() == null) {
+            showError(categoryField, categoryError, "Pilih kategori.");
+            valid = false;
+        }
+ 
+        if (statusField.getValue() == null) {
+            showError(statusField, statusError, "Pilih status.");
+            valid = false;
+        }
+ 
+        if (!valid) {
+            return; // berhenti di sini, tidak jadi simpan ke database
         }
  
         if (editingCustomer == null) {
-            // MODE TAMBAH: bikin object Customer baru.
-            // id diisi 0 karena nanti otomatis di-generate oleh database (AUTOINCREMENT)
             Customer newCustomer = new Customer(
                     0,
                     nameField.getText(),
@@ -88,17 +133,15 @@ public class CustomerFormController implements Initializable{
                     statusField.getValue(),
                     notesField.getText()
             );
-            newCustomer.setEmail(emailField.getText());
+            newCustomer.setEmail(email);
  
             customerService.save(newCustomer);
             AlertUtil.showInfo("Data pelanggan berhasil ditambahkan.");
  
         } else {
-            // MODE EDIT: pakai object yang sudah ada (editingCustomer),
-            // tinggal update field-nya dengan nilai terbaru dari form
             editingCustomer.setName(nameField.getText());
             editingCustomer.setPhone(phoneField.getText());
-            editingCustomer.setEmail(emailField.getText());
+            editingCustomer.setEmail(email);
             editingCustomer.setAddress(addressField.getText());
             editingCustomer.setCategory(categoryField.getValue());
             editingCustomer.setStatus(statusField.getValue());
@@ -110,6 +153,24 @@ public class CustomerFormController implements Initializable{
  
         backToCustomerList(event);
     }
+    
+    // Menandai 1 field sebagai error: kasih border merah + tampilkan pesan di bawahnya
+    private void showError(Control field, Label errorLabel, String message) {
+        if (!field.getStyleClass().contains("input-error")) {
+            field.getStyleClass().add("input-error");
+        }
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+ 
+    // Kebalikan dari showError() -- balikin field ke tampilan normal
+    private void clearError(Control field, Label errorLabel) {
+        field.getStyleClass().remove("input-error");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
+    }
+ 
  
     private void handleCancel(ActionEvent event) {
         backToCustomerList(event);

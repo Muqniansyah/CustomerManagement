@@ -1,7 +1,128 @@
-/*
- * Empty Stylesheet file.
- */
+/* =========================================================
+   LOGIN PAGE
+   Styling halaman Login Customer Management System
+   ========================================================= */
+
+
+/* =========================================================
+   Background halaman
+   ========================================================= */
 
 .mainFxmlClass {
+    /* Background gambar login */
+    -fx-background-image: url("/images/login-background.png");
 
+    /* Gambar memenuhi area window */
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+}
+
+
+/* =========================================================
+   Kotak Form Login
+   ========================================================= */
+
+.login-box {
+    /* Warna putih transparan agar background masih terlihat */
+    -fx-background-color: rgba(255, 255, 255, 0.94);
+
+    /* Sudut kotak */
+    -fx-background-radius: 12px;
+
+    /* Jarak isi dari tepi */
+    -fx-padding: 30px;
+
+    /* Bayangan */
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0, 0, 0, 0.18),
+        18,
+        0.15,
+        0,
+        5
+    );
+}
+
+
+/* =========================================================
+   Judul
+   ========================================================= */
+
+.login-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4b4037;
+}
+
+
+/* =========================================================
+   Username & Password
+   ========================================================= */
+
+#usernameField,
+#passwordField {
+    -fx-background-color: #faf9f7;
+
+    -fx-border-color: #d8d0c8;
+    -fx-border-width: 1px;
+
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+
+    -fx-padding: 9px 12px;
+
+    -fx-font-size: 13px;
+}
+
+
+/* Saat field dipilih */
+
+#usernameField:focused,
+#passwordField:focused {
+    -fx-border-color: #9a7955;
+    -fx-background-color: white;
+}
+
+
+/* =========================================================
+   Tombol Login
+   ========================================================= */
+
+.login-button {
+    -fx-background-color: #8b6f4e;
+    -fx-text-fill: white;
+
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 6px;
+
+    -fx-padding: 9px 30px;
+
+    -fx-cursor: hand;
+}
+
+
+/* Hover tombol */
+
+.login-button:hover {
+    -fx-background-color: #735b40;
+}
+
+
+/* Saat tombol ditekan */
+
+.login-button:pressed {
+    -fx-background-color: #624c36;
+}
+
+
+/* =========================================================
+   Pesan Error
+   ========================================================= */
+
+.error-label {
+    -fx-text-fill: #a05245;
+    -fx-font-size: 12px;
 }

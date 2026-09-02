@@ -23,4 +23,12 @@ public class InteractionService {
     public void delete(int id) {
         interactionDAO.delete(id);
     }
+    
+    public void save(Interaction interaction) {
+        interactionDAO.save(interaction);
+    }
+ 
+    public void update(Interaction interaction) {
+        interactionDAO.update(interaction);
+    }
 }

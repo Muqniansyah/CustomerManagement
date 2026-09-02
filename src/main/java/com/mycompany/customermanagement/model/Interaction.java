@@ -10,6 +10,10 @@ public class Interaction {
     private String type;
     private String description;
     private String notes;
+    
+    // Field TAMBAHAN -- sama seperti di Transaction.java, cuma titipan nama
+    // pelanggan untuk ditampilkan, diisi lewat JOIN query di InteractionDAO
+    private String customerName;
 
     // Constructor kosong
     public Interaction() {
@@ -73,5 +77,13 @@ public class Interaction {
     
     public void setNotes(String notes) { 
         this.notes = notes; 
+    }
+    
+    public String getCustomerName() {
+        return customerName;
+    }
+    
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }

@@ -1,7 +1,69 @@
-/*
- * Empty Stylesheet file.
- */
-
+/* Background utama halaman */
 .mainFxmlClass {
+    -fx-background-color: white;
+}
 
+
+/* Judul form */
+.form-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3d352f;
+}
+
+
+/* Label pada form */
+.form-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5f574f;
+}
+
+
+/* Tampilan input, combo box, date picker, dan textarea */
+.combo-box,
+.date-picker,
+.text-area {
+    -fx-background-color: #faf9f7;
+    -fx-border-color: #d8d1ca;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px;
+}
+
+
+/* Tampilan input ketika sedang dipilih/fokus */
+.combo-box:focused,
+.date-picker:focused,
+.text-area:focused {
+    -fx-border-color: #a88a6a;
+    -fx-background-color: white;
+}
+
+
+/* Tombol Simpan */
+.save-button {
+    -fx-background-color: #8b6f4e;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 9px 20px;
+    -fx-cursor: hand;
+}
+
+
+/* Efek ketika mouse berada di tombol Simpan */
+.save-button:hover {
+    -fx-background-color: #735b40;
+}
+
+
+/* Tombol Batal */
+.cancel-button {
+    -fx-background-color: #e8e4df;
+    -fx-text-fill: #514940;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-padding: 9px 20px;
+    -fx-cursor: hand;
 }

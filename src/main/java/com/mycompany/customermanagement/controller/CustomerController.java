@@ -67,6 +67,8 @@ public class CustomerController implements Initializable {
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
  
         customerTable.setItems(customerData);
+        // fix kolom tiak konsisten
+        customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
  
         // Tombol-tombol dihubungkan ke method masing-masing
         searchButton.setOnAction(this::handleSearch);

@@ -24,4 +24,12 @@ public class TransactionService {
     public void delete(int id) {
         transactionDAO.delete(id);
     }
+    
+    public void save(Transaction transaction) {
+        transactionDAO.save(transaction);
+    }
+ 
+    public void update(Transaction transaction) {
+        transactionDAO.update(transaction);
+    }
 }

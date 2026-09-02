@@ -15,7 +15,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -25,6 +27,7 @@ import javafx.stage.Stage;
 
 public class TransactionController implements Initializable {
     @FXML private TableView<Transaction> transactionTable;
+    @FXML private TableColumn<Transaction, String> colCustomer;
     @FXML private TableColumn<Transaction, String> colDate;
     @FXML private TableColumn<Transaction, Double> colTotal;
     @FXML private TableColumn<Transaction, String> colPaymentStatus;
@@ -44,6 +47,7 @@ public class TransactionController implements Initializable {
  
         // Sama seperti InteractionController -- nama di sini harus cocok
         // dengan getter di Transaction.java
+        colCustomer.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("transactionDate"));
         colTotal.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
         colPaymentStatus.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
@@ -51,12 +55,15 @@ public class TransactionController implements Initializable {
         colNotes.setCellValueFactory(new PropertyValueFactory<>("notes"));
  
         transactionTable.setItems(transactionData);
+        // fix kolom tiak konsisten
+        transactionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
  
         btnDelete.setOnAction(this::handleDelete);
         btnBack.setOnAction(this::handleBack);
  
-        btnAdd.setOnAction(e -> AlertUtil.showInfo("Form tambah transaksi belum dibuat."));
-        btnEdit.setOnAction(e -> AlertUtil.showInfo("Form edit transaksi belum dibuat."));
+        // pindah ke transaction-form.fxml
+        btnAdd.setOnAction(this::handleAdd);
+        btnEdit.setOnAction(this::handleEdit);
  
         loadData();
     }
@@ -78,6 +85,43 @@ public class TransactionController implements Initializable {
         if (confirmed) {
             transactionService.delete(selected.getId());
             loadData();
+        }
+    }
+    
+    private void handleAdd(ActionEvent event) {
+        navigateToForm(event, null);
+    }
+ 
+    private void handleEdit(ActionEvent event) {
+        Transaction selected = transactionTable.getSelectionModel().getSelectedItem();
+ 
+        if (selected == null) {
+            AlertUtil.showError("Pilih dulu data yang mau diedit.");
+            return;
+        }
+ 
+        navigateToForm(event, selected);
+    }
+ 
+    private void navigateToForm(ActionEvent event, Transaction transaction) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/transaction-form.fxml"));
+            Parent formRoot = loader.load();
+ 
+            TransactionFormController formController = loader.getController();
+ 
+            if (transaction != null) {
+                formController.setTransaction(transaction);
+            }
+ 
+            Scene formScene = new Scene(formRoot, 400, 600);
+ 
+            Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            stage.setScene(formScene);
+            stage.setTitle("Form Transaksi - Customer Management System");
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
  

@@ -15,14 +15,16 @@ import java.util.List;
 
 // DAO = menangani komunikasi data Interaction dengan SQLite -> bertanggung jawab pada data interactions
 public class InteractionDAO {
-    // Mengambil semua interaksi
+    // Mengambil semua interaksi, SEKALIGUS nama pelanggannya (JOIN ke tabel customers)
     public List<Interaction> getAll() {
  
         List<Interaction> interactions = new ArrayList<>();
  
-        String sql = "SELECT * FROM interactions ORDER BY interaction_date DESC";
+        String sql = "SELECT i.*, c.name AS customer_name "
+                + "FROM interactions i "
+                + "JOIN customers c ON i.customer_id = c.id "
+                + "ORDER BY i.interaction_date DESC";
  
-        // PERBAIKAN: getConnection() -> connect()
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -43,10 +45,11 @@ public class InteractionDAO {
  
         List<Interaction> interactions = new ArrayList<>();
  
-        // PERBAIKAN: text block -> string sambung (Java 11)
-        String sql = "SELECT * FROM interactions "
-                + "WHERE customer_id = ? "
-                + "ORDER BY interaction_date DESC";
+        String sql = "SELECT i.*, c.name AS customer_name "
+                + "FROM interactions i "
+                + "JOIN customers c ON i.customer_id = c.id "
+                + "WHERE i.customer_id = ? "
+                + "ORDER BY i.interaction_date DESC";
  
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -150,6 +153,9 @@ public class InteractionDAO {
         // Interaction belum menerima notes, jadi di-set manual pakai setter di sini
         interaction.setNotes(rs.getString("notes"));
  
+        // PERBAIKAN: ambil "customer_name" hasil JOIN
+        interaction.setCustomerName(rs.getString("customer_name"));
+        
         return interaction;
     }
 }

@@ -12,6 +12,11 @@ public class Transaction {
     private String paymentProof;
     private String notes;
 
+     // Field TAMBAHAN -- bukan kolom asli di tabel transactions, cuma
+    // "titipan" nama pelanggan (diisi lewat JOIN query di TransactionDAO)
+    // supaya bisa ditampilkan di tabel tanpa perlu query terpisah tiap baris
+    private String customerName;
+    
     // Constructor kosong
     public Transaction() {
     }
@@ -85,5 +90,12 @@ public class Transaction {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+    
+     public String getCustomerName() {
+        return customerName;
+    }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }

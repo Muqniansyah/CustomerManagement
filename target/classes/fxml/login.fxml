@@ -8,18 +8,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="191.0" prefWidth="371.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.customermanagement.controller.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.customermanagement.controller.LoginController">
     <stylesheets>
         <URL value="@/styles/login.css" />
     </stylesheets>
    <children>
-      <VBox alignment="CENTER" layoutX="14.0" layoutY="14.0" prefHeight="170.0" prefWidth="345.0" spacing="10.0">
+      <!-- Form dipindah ke kanan (AnchorPane.rightAnchor) & diisi jarak dari atas/bawah agar pas di tengah -->
+      <VBox alignment="CENTER_LEFT" prefWidth="320.0" spacing="15.0" styleClass="login-box" AnchorPane.bottomAnchor="70.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="70.0">
          <children>
-            <Label alignment="TOP_CENTER" text="Customer Mangement System" textAlignment="CENTER" />
-            <TextField fx:id="usernameField" alignment="CENTER" maxWidth="250.0" prefHeight="25.0" prefWidth="419.0" promptText="Username" />
-            <PasswordField fx:id="passwordField" alignment="CENTER" maxWidth="250.0" prefHeight="25.0" prefWidth="89.0" promptText="password" />
-            <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleLogin" text="Login" textAlignment="CENTER" />
-            <Label fx:id="errorLabel" />
+            <Label text="Customer Management System" wrapText="true" styleClass="login-title" />
+            
+            <TextField fx:id="usernameField" prefHeight="38.0" promptText="Username" />
+            <PasswordField fx:id="passwordField" prefHeight="38.0" promptText="Password" />
+            
+            <Button fx:id="loginButton" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" text="Login" styleClass="login-button" />
+            <Label fx:id="errorLabel" styleClass="error-label" />
          </children>
       </VBox>
    </children>
