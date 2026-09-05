@@ -19,6 +19,11 @@ public class CustomerService {
     public List<Customer> search(String keyword) {
         return customerDAO.search(keyword);
     }
+    
+    // fungsi filter status aktif dan tidak aktif   
+    public List<Customer> filterByStatus(String status) {
+        return customerDAO.filterByStatus(status);
+    }
 
     public void delete(int id) {
         customerDAO.delete(id);

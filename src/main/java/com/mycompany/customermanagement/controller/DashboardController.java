@@ -108,7 +108,7 @@ public class DashboardController {
 
         VBox customerCard = createMenuCard(
                 "Data Pelanggan",
-                "Kelola informasi dan data pelanggan.",
+                "Kelola data pelanggan.",
                 "Buka Data Pelanggan",
                 this::handleShowCustomerPage
         );
@@ -122,7 +122,7 @@ public class DashboardController {
 
         VBox interactionCard = createMenuCard(
                 "Riwayat Interaksi",
-                "Catat dan lihat riwayat interaksi pelanggan.",
+                "Kelola interaksi pelanggan.",
                 "Buka Interaksi",
                 this::handleShowInteractionPage
         );

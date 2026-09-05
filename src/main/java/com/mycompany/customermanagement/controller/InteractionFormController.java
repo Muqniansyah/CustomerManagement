@@ -25,7 +25,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -38,6 +40,11 @@ public class InteractionFormController implements Initializable{
     @FXML private TextArea notesField;
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
+    
+    @FXML private Label customerError;
+    @FXML private Label dateError;
+    @FXML private Label typeError;
+    @FXML private Label descriptionError;
  
     private final CustomerService customerService = new CustomerService();
     private final InteractionService interactionService = new InteractionService();
@@ -88,12 +95,34 @@ public class InteractionFormController implements Initializable{
  
     private void handleSave(ActionEvent event) {
  
+        clearError(customerField, customerError);
+        clearError(dateField, dateError);
+        clearError(typeField, typeError);
+        clearError(descriptionField, descriptionError);
+ 
+        boolean valid = true;
+ 
         if (customerField.getValue() == null) {
-            AlertUtil.showError("Pilih pelanggan dulu.");
-            return;
+            showError(customerField, customerError, "Pilih pelanggan.");
+            valid = false;
         }
+ 
         if (dateField.getValue() == null) {
-            AlertUtil.showError("Tanggal wajib diisi.");
+            showError(dateField, dateError, "Tanggal wajib diisi.");
+            valid = false;
+        }
+ 
+        if (typeField.getValue() == null) {
+            showError(typeField, typeError, "Pilih tipe interaksi.");
+            valid = false;
+        }
+ 
+        if (descriptionField.getText() == null || descriptionField.getText().isBlank()) {
+            showError(descriptionField, descriptionError, "Deskripsi wajib diisi.");
+            valid = false;
+        }
+ 
+        if (!valid) {
             return;
         }
  
@@ -125,6 +154,21 @@ public class InteractionFormController implements Initializable{
         }
  
         backToInteractionList(event);
+    }
+ 
+    private void showError(Control field, Label errorLabel, String message) {
+        if (!field.getStyleClass().contains("input-error")) {
+            field.getStyleClass().add("input-error");
+        }
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+ 
+    private void clearError(Control field, Label errorLabel) {
+        field.getStyleClass().remove("input-error");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
     }
  
     private void handleCancel(ActionEvent event) {

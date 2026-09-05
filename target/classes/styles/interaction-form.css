@@ -1,69 +1,135 @@
-/* Background utama halaman */
+/* =========================================================
+   INTERACTION FORM
+   Styling form Tambah/Edit Interaksi -- senada dengan customer-form.css
+   ========================================================= */
+
 .mainFxmlClass {
+    /*-fx-background-color: #f7f4f0;*/
+    -fx-background-image: url('/images/form.png'); 
+    -fx-background-size: cover; 
+    -fx-background-position: center;
+}
+
+.card {
     -fx-background-color: white;
+    -fx-background-radius: 14px;
+    -fx-border-color: #e7ddd2;
+    -fx-border-width: 1px;
+    -fx-border-radius: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(139,111,78,0.18), 18, 0, 0, 6);
 }
 
-
-/* Judul form */
 .form-title {
-    -fx-font-size: 22px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-text-fill: #3d352f;
+    -fx-text-fill: #5a4632;
+    -fx-padding: 0 0 6 0;
 }
 
-
-/* Label pada form */
 .form-label {
+    -fx-text-fill: #6b5c4d;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
-    -fx-text-fill: #5f574f;
 }
 
-
-/* Tampilan input, combo box, date picker, dan textarea */
-.combo-box,
-.date-picker,
-.text-area {
-    -fx-background-color: #faf9f7;
-    -fx-border-color: #d8d1ca;
+.text-field, .text-area {
+    -fx-background-color: #faf8f5;
+    -fx-border-color: #d8d0c8;
+    -fx-border-width: 1px;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
-    -fx-padding: 8px;
+    -fx-padding: 6px 10px;
+    -fx-font-size: 13px;
 }
 
+.text-area .content {
+    -fx-background-color: #faf8f5;
+    -fx-background-radius: 6px;
+}
 
-/* Tampilan input ketika sedang dipilih/fokus */
-.combo-box:focused,
-.date-picker:focused,
-.text-area:focused {
-    -fx-border-color: #a88a6a;
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #9a7955;
     -fx-background-color: white;
 }
 
+.combo-box {
+    -fx-background-color: #faf8f5;
+    -fx-border-color: #d8d0c8;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 13px;
+}
 
-/* Tombol Simpan */
+.combo-box:focused {
+    -fx-border-color: #9a7955;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #4b4037;
+    -fx-padding: 6px 10px;
+}
+
+/* DatePicker -- unified border, bagian dalam (text field) dibuat transparan
+   supaya nyatu jadi 1 kotak, bukan 2 kotak terpisah */
+.date-picker {
+    -fx-background-color: #faf8f5;
+    -fx-border-color: #d8d0c8;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.date-picker:focused {
+    -fx-border-color: #9a7955;
+}
+
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 6px 10px;
+    -fx-font-size: 13px;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* Validasi */
+.input-error {
+    -fx-border-color: #c0392b;
+    -fx-border-width: 1.5px;
+}
+
+.field-error {
+    -fx-text-fill: #c0392b;
+    -fx-font-size: 11px;
+}
+
 .save-button {
     -fx-background-color: #8b6f4e;
     -fx-text-fill: white;
+    -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-background-radius: 6px;
-    -fx-padding: 9px 20px;
+    -fx-padding: 9px 22px;
     -fx-cursor: hand;
 }
 
-
-/* Efek ketika mouse berada di tombol Simpan */
 .save-button:hover {
     -fx-background-color: #735b40;
 }
 
-
-/* Tombol Batal */
 .cancel-button {
-    -fx-background-color: #e8e4df;
+    -fx-background-color: #e5e1dd;
     -fx-text-fill: #514940;
+    -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-background-radius: 6px;
-    -fx-padding: 9px 20px;
+    -fx-padding: 9px 22px;
     -fx-cursor: hand;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #d8d2cc;
 }

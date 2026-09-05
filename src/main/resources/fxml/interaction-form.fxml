@@ -12,188 +12,94 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- Form Interaksi dengan desain yang konsisten dengan Customer Form -->
-<AnchorPane
-    id="AnchorPane"
-    prefHeight="543.0"
-    prefWidth="400.0"
-    styleClass="mainFxmlClass"
-    xmlns="http://javafx.com/javafx/26"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.mycompany.customermanagement.controller.InteractionFormController">
+<!-- Form Interaksi dengan desain yang konsisten -->
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="900.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.customermanagement.controller.InteractionFormController">
 
     <stylesheets>
         <URL value="@/styles/interaction-form.css" />
     </stylesheets>
 
     <children>
-
-        <!-- StackPane membuat form tetap berada di tengah saat window di-resize -->
-        <StackPane
-            AnchorPane.bottomAnchor="0.0"
-            AnchorPane.leftAnchor="0.0"
-            AnchorPane.rightAnchor="0.0"
-            AnchorPane.topAnchor="0.0">
-
+        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-
-                <!-- Container utama form -->
-                <VBox
-                    alignment="CENTER"
-                    maxWidth="420.0"
-                    prefWidth="420.0"
-                    spacing="10.0"
-                    StackPane.alignment="CENTER">
-
+                <!-- maxHeight="-Infinity" mengunci kartu agar tidak memanjang vertikal -->
+                <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="480.0" prefWidth="480.0" spacing="12.0" styleClass="card" StackPane.alignment="CENTER">
+                    
                     <padding>
-                        <Insets
-                            bottom="20.0"
-                            left="20.0"
-                            right="20.0"
-                            top="20.0" />
+                        <Insets bottom="25.0" left="30.0" right="30.0" top="25.0" />
                     </padding>
 
                     <children>
+                        <Label styleClass="form-title" text="Form Interaksi" />
 
-                        <!-- Judul -->
-                        <Label
-                            text="Form Interaksi"
-                            styleClass="form-title" />
+                        <VBox spacing="3.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="80.0" styleClass="form-label" text="Pelanggan" />
+                                    <ComboBox fx:id="customerField" maxWidth="1.7976931348623157E308" promptText="Pilih pelanggan" styleClass="combo-box" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <Label fx:id="customerError" managed="false" styleClass="field-error" visible="false" />
+                           </children>
+                        </VBox>
 
+                        <VBox spacing="3.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="80.0" styleClass="form-label" text="Tanggal" />
+                                    <DatePicker fx:id="dateField" maxWidth="1.7976931348623157E308" promptText="Pilih tanggal" styleClass="date-picker" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <Label fx:id="dateError" managed="false" styleClass="field-error" visible="false" />
+                           </children>
+                        </VBox>
 
-                        <!-- Pelanggan -->
-                        <HBox
-                            alignment="CENTER_LEFT"
-                            spacing="10.0">
+                        <VBox spacing="3.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="80.0" styleClass="form-label" text="Tipe" />
+                                    <ComboBox fx:id="typeField" maxWidth="1.7976931348623157E308" promptText="Pilih tipe" styleClass="combo-box" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <Label fx:id="typeError" managed="false" styleClass="field-error" visible="false" />
+                           </children>
+                        </VBox>
 
-                            <children>
-                                <Label
-                                    prefWidth="80.0"
-                                    text="Pelanggan"
-                                    styleClass="form-label" />
+                        <VBox spacing="3.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="80.0" styleClass="form-label" text="Deskripsi" />
+                                    <TextArea fx:id="descriptionField" prefHeight="65.0" prefWidth="325.0" promptText="Jelaskan interaksinya" styleClass="text-area" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <Label fx:id="descriptionError" managed="false" styleClass="field-error" visible="false" />
+                           </children>
+                        </VBox>
 
-                                <ComboBox
-                                    fx:id="customerField"
-                                    prefWidth="155.0"
-                                    styleClass="combo-box" />
-                            </children>
-
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Label prefWidth="80.0" styleClass="form-label" text="Catatan" />
+                              <TextArea fx:id="notesField" prefHeight="65.0" prefWidth="325.0" promptText="Catatan tambahan (opsional)" styleClass="text-area" HBox.hgrow="ALWAYS" />
+                           </children>
                         </HBox>
 
-
-                        <!-- Tanggal -->
-                        <HBox
-                            alignment="CENTER_LEFT"
-                            spacing="10.0">
-
-                            <children>
-                                <Label
-                                    prefWidth="80.0"
-                                    text="Tanggal"
-                                    styleClass="form-label" />
-
-                                <DatePicker
-                                    fx:id="dateField"
-                                    prefWidth="155.0"
-                                    styleClass="date-picker" />
-                            </children>
-
-                        </HBox>
-
-
-                        <!-- Tipe Interaksi -->
-                        <HBox
-                            alignment="CENTER_LEFT"
-                            spacing="10.0">
-
-                            <children>
-                                <Label
-                                    prefWidth="80.0"
-                                    text="Tipe"
-                                    styleClass="form-label" />
-
-                                <ComboBox
-                                    fx:id="typeField"
-                                    prefWidth="155.0"
-                                    styleClass="combo-box" />
-                            </children>
-
-                        </HBox>
-
-
-                        <!-- Deskripsi -->
-                        <HBox
-                            alignment="CENTER_LEFT"
-                            spacing="10.0">
-
-                            <children>
-                                <Label
-                                    prefWidth="80.0"
-                                    text="Deskripsi"
-                                    styleClass="form-label" />
-
-                                <TextArea
-                                    fx:id="descriptionField"
-                                    prefHeight="60.0"
-                                    prefWidth="155.0"
-                                    styleClass="text-area" />
-                            </children>
-
-                        </HBox>
-
-
-                        <!-- Catatan -->
-                        <HBox
-                            alignment="CENTER_LEFT"
-                            spacing="10.0">
-
-                            <children>
-                                <Label
-                                    prefWidth="80.0"
-                                    text="Catatan"
-                                    styleClass="form-label" />
-
-                                <TextArea
-                                    fx:id="notesField"
-                                    prefHeight="60.0"
-                                    prefWidth="155.0"
-                                    styleClass="text-area" />
-                            </children>
-
-                        </HBox>
-
-
-                        <!-- Tombol -->
-                        <HBox
-                            alignment="CENTER_LEFT"
-                            spacing="10.0">
-
-                            <children>
-
-                                <Button
-                                    fx:id="btnSave"
-                                    mnemonicParsing="false"
-                                    text="Simpan"
-                                    styleClass="save-button" />
-
-                                <Button
-                                    fx:id="btnCancel"
-                                    mnemonicParsing="false"
-                                    text="Batal"
-                                    styleClass="cancel-button" />
-
-                            </children>
-
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                           <children>
+                              <Button fx:id="btnCancel" mnemonicParsing="false" styleClass="cancel-button" text="Batal" />
+                              <Button fx:id="btnSave" mnemonicParsing="false" styleClass="save-button" text="Simpan" />
+                           </children>
+                           <VBox.margin>
+                              <Insets top="8.0" />
+                           </VBox.margin>
                         </HBox>
 
                     </children>
-
                 </VBox>
-
             </children>
-
         </StackPane>
-
     </children>
-
 </AnchorPane>

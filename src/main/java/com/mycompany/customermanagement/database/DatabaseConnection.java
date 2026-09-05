@@ -77,9 +77,9 @@ public class DatabaseConnection {
             stmt.execute(createTransactions);
             stmt.execute(createInteractions);
             
-            // Membuat user percobaan (admin/admin) kalau belum ada, supaya bisa dites login
+            // Membuat user dan password hashing
             stmt.execute("INSERT OR IGNORE INTO users (username, password_hash, role) "
-                    + "VALUES ('admin', 'admin', 'admin')");
+                        + "VALUES ('admin', '" + com.mycompany.customermanagement.util.PasswordUtil.hash("admin") + "', 'admin')");
             System.out.println("Database berhasil diinisialisasi.");
 
         } catch (SQLException e) {

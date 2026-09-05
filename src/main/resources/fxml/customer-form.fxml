@@ -14,16 +14,18 @@
 
 <!-- styling dengan cara styleclass -->
 
-<AnchorPane id="AnchorPane" prefHeight="543.0" prefWidth="219.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.customermanagement.controller.CustomerFormController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="900.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.customermanagement.controller.CustomerFormController">
     <stylesheets>
         <URL value="@/styles/customer-form.css" />
     </stylesheets>
    <children>
-      <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" maxWidth="360.0" prefWidth="360.0" spacing="10.0" styleClass="card" StackPane.alignment="CENTER">
+            <!-- maxHeight="-Infinity" & usePrefHeight agar kartu TIDAK ditarik melar vertikal oleh StackPane -->
+            <!-- maxWidth dinaikkan ke 480px agar bentuknya proporsional seperti login card -->
+            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="480.0" prefWidth="480.0" spacing="12.0" styleClass="card" StackPane.alignment="CENTER">
                <padding>
-                  <Insets bottom="22.0" left="22.0" right="22.0" top="22.0" />
+                  <Insets bottom="25.0" left="30.0" right="30.0" top="25.0" />
                </padding>
                <children>
                   <Label styleClass="form-title" text="Form Data Pelanggan" />
@@ -32,7 +34,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
-                              <Label prefWidth="70.0" styleClass="form-label" text="Nama" />
+                              <Label prefWidth="80.0" styleClass="form-label" text="Nama" />
                               <TextField fx:id="nameField" promptText="Contoh: Budi Santoso" styleClass="text-field" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
@@ -44,7 +46,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
-                              <Label prefWidth="70.0" styleClass="form-label" text="Telepon" />
+                              <Label prefWidth="80.0" styleClass="form-label" text="Telepon" />
                               <TextField fx:id="phoneField" promptText="08xxxxxxxxxx" styleClass="text-field" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
@@ -56,7 +58,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
-                              <Label prefWidth="70.0" styleClass="form-label" text="Email" />
+                              <Label prefWidth="80.0" styleClass="form-label" text="Email" />
                               <TextField fx:id="emailField" promptText="nama@email.com" styleClass="text-field" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
@@ -66,7 +68,7 @@
 
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label prefWidth="70.0" styleClass="form-label" text="Alamat" />
+                        <Label prefWidth="80.0" styleClass="form-label" text="Alamat" />
                         <TextField fx:id="addressField" promptText="Alamat lengkap (ops)" styleClass="text-field" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
@@ -75,8 +77,8 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
-                              <Label prefWidth="70.0" styleClass="form-label" text="Kategori" />
-                              <ComboBox fx:id="categoryField" promptText="Pilih kategori" styleClass="combo-box" HBox.hgrow="ALWAYS" />
+                              <Label prefWidth="80.0" styleClass="form-label" text="Kategori" />
+                              <ComboBox fx:id="categoryField" maxWidth="1.7976931348623157E308" promptText="Pilih kategori" styleClass="combo-box" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <Label fx:id="categoryError" managed="false" styleClass="field-error" visible="false" />
@@ -87,8 +89,8 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
-                              <Label prefWidth="70.0" styleClass="form-label" text="Status" />
-                              <ComboBox fx:id="statusField" promptText="Pilih status" styleClass="combo-box" HBox.hgrow="ALWAYS" />
+                              <Label prefWidth="80.0" styleClass="form-label" text="Status" />
+                              <ComboBox fx:id="statusField" maxWidth="1.7976931348623157E308" promptText="Pilih status" styleClass="combo-box" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <Label fx:id="statusError" managed="false" styleClass="field-error" visible="false" />
@@ -97,8 +99,9 @@
 
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Label prefHeight="17.0" prefWidth="41.0" styleClass="form-label" text="Catatan" />
-                        <TextArea fx:id="notesField" prefHeight="55.0" prefWidth="99.0" promptText="Catatan (ops)" styleClass="text-area" HBox.hgrow="ALWAYS" />
+                        <!-- Lebar disamakan 80.0 agar sejajar dan tulisan Catatan tidak terpotong lagi -->
+                        <Label prefWidth="80.0" styleClass="form-label" text="Catatan" />
+                        <TextArea fx:id="notesField" prefHeight="65.0" prefWidth="325.0" promptText="Catatan (ops)" styleClass="text-area" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
 
@@ -107,6 +110,9 @@
                         <Button fx:id="btnCancel" mnemonicParsing="false" styleClass="cancel-button" text="Batal" />
                         <Button fx:id="btnSave" mnemonicParsing="false" styleClass="save-button" text="Simpan" />
                      </children>
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>

@@ -11,6 +11,7 @@ import com.mycompany.customermanagement.util.AlertUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
  
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -63,6 +64,15 @@ public class CustomerFormController implements Initializable{
  
         btnSave.setOnAction(this::handleSave);
         btnCancel.setOnAction(this::handleCancel);
+        
+        // Paksa window jadi FULLSCREEN khusus di halaman ini dengan Set ExitHint terlebih dahulu sebelum fullscreen aktif
+        Platform.runLater(() -> {
+            Stage stage = (Stage) btnCancel.getScene().getWindow();
+            if (stage != null) {
+                stage.setFullScreenExitHint(""); // Sembunyikan pesan ESC
+                stage.setFullScreen(true);
+            }
+        });
     }
  
     // Dipanggil dari CustomerController SEBELUM halaman form ini ditampilkan,
@@ -181,13 +191,25 @@ public class CustomerFormController implements Initializable{
     // Java langsung) karena customer-list.fxml memang berbasis FXML
     private void backToCustomerList(ActionEvent event) {
         try {
+            // 1. Load FXML & buat Scene baru lebih dulu
             Parent listRoot = FXMLLoader.load(getClass().getResource("/fxml/customer-list.fxml"));
             Scene listScene = new Scene(listRoot, 800, 500);
- 
+
+            // 2. Ambil Stage yang sedang aktif
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            stage.setScene(listScene);
-            stage.setTitle("Data Pelanggan - Customer Management System");
- 
+
+            if (stage != null) {
+                // 3. Ganti scene lebih dulu selagi masih fullscreen
+                stage.setScene(listScene);
+                stage.setTitle("Data Pelanggan - Customer Management System");
+
+                // 4. Bungkus kembalinya ukuran window di Platform.runLater
+                // Ini mencegah efek kedip/glitch saat keluar dari fullscreen
+                Platform.runLater(() -> {
+                    stage.setFullScreen(false);
+                    stage.centerOnScreen();
+                });
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -25,7 +25,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -40,6 +42,11 @@ public class TransactionFormController implements Initializable{
     @FXML private TextArea notesField;
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
+    
+    @FXML private Label customerError;
+    @FXML private Label dateError;
+    @FXML private Label totalError;
+    @FXML private Label paymentStatusError;
  
     private final CustomerService customerService = new CustomerService();
     private final TransactionService transactionService = new TransactionService();
@@ -98,20 +105,46 @@ public class TransactionFormController implements Initializable{
  
     private void handleSave(ActionEvent event) {
  
+        clearError(customerField, customerError);
+        clearError(dateField, dateError);
+        clearError(totalField, totalError);
+        clearError(paymentStatusField, paymentStatusError);
+ 
+        boolean valid = true;
+ 
         if (customerField.getValue() == null) {
-            AlertUtil.showError("Pilih pelanggan dulu.");
-            return;
-        }
-        if (dateField.getValue() == null) {
-            AlertUtil.showError("Tanggal wajib diisi.");
-            return;
+            showError(customerField, customerError, "Pilih pelanggan.");
+            valid = false;
         }
  
-        double total;
-        try {
-            total = Double.parseDouble(totalField.getText());
-        } catch (NumberFormatException e) {
-            AlertUtil.showError("Total harus berupa angka (contoh: 150000).");
+        if (dateField.getValue() == null) {
+            showError(dateField, dateError, "Tanggal wajib diisi.");
+            valid = false;
+        }
+ 
+        double total = 0;
+        if (totalField.getText() == null || totalField.getText().isBlank()) {
+            showError(totalField, totalError, "Total wajib diisi.");
+            valid = false;
+        } else {
+            try {
+                total = Double.parseDouble(totalField.getText());
+                if (total <= 0) {
+                    showError(totalField, totalError, "Total harus lebih besar dari 0.");
+                    valid = false;
+                }
+            } catch (NumberFormatException e) {
+                showError(totalField, totalError, "Total harus berupa angka.");
+                valid = false;
+            }
+        }
+ 
+        if (paymentStatusField.getValue() == null) {
+            showError(paymentStatusField, paymentStatusError, "Pilih status pembayaran.");
+            valid = false;
+        }
+ 
+        if (!valid) {
             return;
         }
  
@@ -144,6 +177,21 @@ public class TransactionFormController implements Initializable{
         }
  
         backToTransactionList(event);
+    }
+ 
+    private void showError(Control field, Label errorLabel, String message) {
+        if (!field.getStyleClass().contains("input-error")) {
+            field.getStyleClass().add("input-error");
+        }
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+ 
+    private void clearError(Control field, Label errorLabel) {
+        field.getStyleClass().remove("input-error");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
     }
  
     private void handleCancel(ActionEvent event) {

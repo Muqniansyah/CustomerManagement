@@ -20,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -33,6 +34,7 @@ import javafx.stage.Stage;
 public class CustomerController implements Initializable {
     @FXML private TextField searchField;
     @FXML private Button searchButton;
+    @FXML private ComboBox<String> statusFilter;
  
     @FXML private TableView<Customer> customerTable;
     @FXML private TableColumn<Customer, Integer> colId;
@@ -41,6 +43,7 @@ public class CustomerController implements Initializable {
     @FXML private TableColumn<Customer, String> colEmail;
     @FXML private TableColumn<Customer, String> colCategory;
     @FXML private TableColumn<Customer, String> colStatus;
+    @FXML private TableColumn<Customer, String> colNotes;
  
     @FXML private Button btnAdd;
     @FXML private Button btnEdit;
@@ -57,19 +60,38 @@ public class CustomerController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
  
+        // Kolom No. -- tampilkan nomor urut baris (1,2,3,...), BUKAN id asli dari database.
+        // id asli tetap dipakai di balik layar untuk Edit/Hapus, cuma tidak ditampilkan di kolom ini.
+        colId.setCellFactory(col -> new javafx.scene.control.TableCell<Customer, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
+        
         // Menghubungkan tiap kolom tabel ke property/getter yang sesuai di Customer.java
-        // "id" di sini artinya JavaFX akan otomatis panggil getId(), "name" -> getName(), dst.
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        // "name" di sini artinya JavaFX akan otomatis panggil getName(), dst.
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colNotes.setCellValueFactory(new PropertyValueFactory<>("notes"));
  
         customerTable.setItems(customerData);
         // fix kolom tiak konsisten
         customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
  
+        // isi pilihan dropdown filter status
+        statusFilter.getItems().addAll("Semua Status", "active", "inactive");
+        statusFilter.setValue("Semua Status");
+        statusFilter.valueProperty().addListener((obs, oldValue, newValue) -> handleFilterStatus(newValue));
+        
         // Tombol-tombol dihubungkan ke method masing-masing
         searchButton.setOnAction(this::handleSearch);
         btnDelete.setOnAction(this::handleDelete);
@@ -90,11 +112,27 @@ public class CustomerController implements Initializable {
     // Cari berdasarkan kata kunci di searchField
     private void handleSearch(ActionEvent event) {
         String keyword = searchField.getText();
+        
+        // reset filter status kembali ke "Semua Status" waktu user search manual,
+        // supaya tidak bingung ("kenapa hasil search cuma dikit?" -- ternyata gara-gara
+        // filter status masih aktif dari sebelumnya)
+        statusFilter.setValue("Semua Status");
+
  
         if (keyword == null || keyword.isBlank()) {
             loadData(); // kalau kolom search kosong, tampilkan semua data lagi
         } else {
             customerData.setAll(customerService.search(keyword));
+        }
+    }
+    
+    // dipanggil otomatis tiap kali pilihan statusFilter berubah
+    private void handleFilterStatus(String selectedStatus) {
+ 
+        if (selectedStatus == null || selectedStatus.equals("Semua Status")) {
+            loadData();
+        } else {
+            customerData.setAll(customerService.filterByStatus(selectedStatus));
         }
     }
  

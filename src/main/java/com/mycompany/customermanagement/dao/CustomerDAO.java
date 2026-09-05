@@ -66,6 +66,31 @@ public class CustomerDAO {
  
         return customers;
     }
+    
+     // mengambil pelanggan berdasarkan status keaktifan (active/inactive)
+    public List<Customer> filterByStatus(String status) {
+ 
+        List<Customer> customers = new ArrayList<>();
+ 
+        String sql = "SELECT * FROM customers WHERE status = ? ORDER BY name";
+ 
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+ 
+            stmt.setString(1, status);
+ 
+            ResultSet rs = stmt.executeQuery();
+ 
+            while (rs.next()) {
+                customers.add(mapCustomer(rs));
+            }
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+ 
+        return customers;
+    }
  
     // Menambahkan pelanggan baru
     public void save(Customer customer) {
