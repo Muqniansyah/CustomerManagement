@@ -17,16 +17,20 @@ public class ExportUtil {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
-            // Baris pertama = judul kolom
-            writer.write("ID,Nama,Telepon,Email,Alamat,Kategori,Status,Catatan");
+            // Menjadikan Excel otomatis membaca delimiter titik koma secara konsisten
+            writer.write("sep=;");
+            writer.newLine();
+            
+            // Baris pertama = judul kolom & Gunakan titik koma sebagai pemisah header
+            writer.write("ID;Nama;Telepon;Email;Alamat;Kategori;Status;Catatan");
             writer.newLine();
 
-            // Satu baris per pelanggan
+            // Satu baris per pelanggan & Gunakan titik koma sebagai pemisah baris data
             for (Customer c : customers) {
-                writer.write(String.join(",",
+                writer.write(String.join(";",
                     String.valueOf(c.getId()),
                     escapeCsv(c.getName()),
-                    escapeCsv(c.getPhone()),
+                    formatPhoneNumber(c.getPhone()), // Memaksa Excel membaca telepon sebagai teks murni
                     escapeCsv(c.getEmail()),
                     escapeCsv(c.getAddress()),
                     escapeCsv(c.getCategory()),
@@ -43,6 +47,14 @@ public class ExportUtil {
             return false;
         }
     }
+    
+    // Format khusus agar nomor telepon dianggap teks oleh Excel (mencegah format 8,69E+12)
+    private static String formatPhoneNumber(String phone) {
+        if (phone == null || phone.isBlank()) {
+            return "";
+        }
+        return "=\"" + phone + "\"";
+    }
 
     // Melindungi data yang kebetulan mengandung koma/petik/baris baru,
     // supaya tidak merusak struktur CSV (misal Catatan berisi "beli, lalu bayar")
@@ -50,7 +62,7 @@ public class ExportUtil {
         if (value == null) {
             return "";
         }
-        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+        if (value.contains(";") || value.contains(",") || value.contains("\"") || value.contains("\n")) {
             value = value.replace("\"", "\"\"");
             return "\"" + value + "\"";
         }
