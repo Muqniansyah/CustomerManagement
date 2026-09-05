@@ -128,6 +128,16 @@
     -fx-background-color: #dbc9be;
 }
 
+/* Tombol export */
+#btnExport {
+    -fx-background-color: #d8c4aa;
+    -fx-text-fill: #4b4037;
+}
+
+#btnExport:hover {
+    -fx-background-color: #c9b398;
+}
+
 
 /* Tombol Kembali */
 #btnBack {

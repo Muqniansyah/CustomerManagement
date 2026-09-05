@@ -112,7 +112,7 @@ public class InteractionController implements Initializable {
                 formController.setInteraction(interaction);
             }
  
-            Scene formScene = new Scene(formRoot, 400, 600);
+            Scene formScene = new Scene(formRoot, 900, 600);
  
             Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             stage.setScene(formScene);

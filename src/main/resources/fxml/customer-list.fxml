@@ -57,6 +57,7 @@
                         <Button fx:id="btnAdd" mnemonicParsing="false" text="Tambah" />
                         <Button fx:id="btnEdit" mnemonicParsing="false" text="Edit" />
                         <Button fx:id="btnDelete" mnemonicParsing="false" text="Hapus" />
+                        <Button fx:id="btnExport" mnemonicParsing="false" text="Export CSV" />
                         <Button fx:id="btnBack" mnemonicParsing="false" text="Kembali" />
                      </children>
                   </HBox>

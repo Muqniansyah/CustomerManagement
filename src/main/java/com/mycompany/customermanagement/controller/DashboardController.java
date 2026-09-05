@@ -1,5 +1,8 @@
 package com.mycompany.customermanagement.controller;
 
+import com.mycompany.customermanagement.util.AlertUtil;
+import com.mycompany.customermanagement.util.BackupUtil;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -58,6 +61,20 @@ public class DashboardController {
         // Spacer agar tombol Logout berada di sebelah kanan
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+        
+        // tombol backup database
+        Button btnBackup = new Button("Backup Database");
+        btnBackup.setStyle(
+                "-fx-background-color: transparent;"
+                + "-fx-border-color: #c9b398;"
+                + "-fx-border-width: 1.5px;"
+                + "-fx-border-radius: 6px;"
+                + "-fx-text-fill: #5f4d3d;"
+                + "-fx-font-weight: bold;"
+                + "-fx-padding: 8px 16px;"
+                + "-fx-cursor: hand;"
+        );
+        btnBackup.setOnAction(this::handleBackup);
 
         Button btnLogout = new Button("Logout");
         btnLogout.setStyle(
@@ -71,7 +88,11 @@ public class DashboardController {
 
         btnLogout.setOnAction(this::handleLogout);
 
-        header.getChildren().addAll(titleBox, spacer, btnLogout);
+        // btnBackup ditambahkan sebelum btnLogout
+        header.getChildren().addAll(titleBox, spacer, btnBackup, btnLogout);
+ 
+        // Beri sedikit jarak antara Backup dan Logout
+        HBox.setMargin(btnBackup, new Insets(0, 10, 0, 0));
 
         // =====================================================
         // KONTEN DASHBOARD
@@ -213,6 +234,21 @@ public class DashboardController {
         );
 
         return card;
+    }
+    
+    // =========================================================
+    // BACKUP DATABASE
+    // =========================================================
+ 
+    private void handleBackup(ActionEvent event) {
+ 
+        boolean success = BackupUtil.backupDatabase();
+ 
+        if (success) {
+            AlertUtil.showInfo("Backup berhasil disimpan di folder 'backup/'.");
+        } else {
+            AlertUtil.showError("Backup gagal. Pastikan database sudah pernah dijalankan.");
+        }
     }
 
     // =========================================================

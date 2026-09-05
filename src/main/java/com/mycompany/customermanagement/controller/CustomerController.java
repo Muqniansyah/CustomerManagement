@@ -7,7 +7,9 @@ package com.mycompany.customermanagement.controller;
 import com.mycompany.customermanagement.model.Customer;
 import com.mycompany.customermanagement.service.CustomerService;
 import com.mycompany.customermanagement.util.AlertUtil;
+import com.mycompany.customermanagement.util.ExportUtil;
  
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
  
@@ -25,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
@@ -48,6 +51,7 @@ public class CustomerController implements Initializable {
     @FXML private Button btnAdd;
     @FXML private Button btnEdit;
     @FXML private Button btnDelete;
+    @FXML private Button btnExport;
     @FXML private Button btnBack;
  
     private final CustomerService customerService = new CustomerService();
@@ -95,6 +99,7 @@ public class CustomerController implements Initializable {
         // Tombol-tombol dihubungkan ke method masing-masing
         searchButton.setOnAction(this::handleSearch);
         btnDelete.setOnAction(this::handleDelete);
+        btnExport.setOnAction(this::handleExport);
         btnBack.setOnAction(this::handleBack);
  
         // pindah ke customer-form.fxml
@@ -133,6 +138,35 @@ public class CustomerController implements Initializable {
             loadData();
         } else {
             customerData.setAll(customerService.filterByStatus(selectedStatus));
+        }
+    }
+    
+    // export data yang sedang tampil di tabel (menghormati search/filter yang aktif) ke CSV
+    private void handleExport(ActionEvent event) {
+ 
+        if (customerData.isEmpty()) {
+            AlertUtil.showError("Tidak ada data untuk di-export.");
+            return;
+        }
+ 
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export Data Pelanggan");
+        fileChooser.setInitialFileName("data_pelanggan.csv");
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("CSV File", "*.csv")
+        );
+ 
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        File file = fileChooser.showSaveDialog(stage);
+ 
+        if (file != null) {
+            boolean success = ExportUtil.exportCustomersToCsv(customerData, file);
+ 
+            if (success) {
+                AlertUtil.showInfo("Data berhasil di-export ke:\n" + file.getAbsolutePath());
+            } else {
+                AlertUtil.showError("Gagal export data.");
+            }
         }
     }
  

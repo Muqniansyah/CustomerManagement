@@ -9,7 +9,9 @@ import com.mycompany.customermanagement.model.Transaction;
 import com.mycompany.customermanagement.service.CustomerService;
 import com.mycompany.customermanagement.service.TransactionService;
 import com.mycompany.customermanagement.util.AlertUtil;
+import com.mycompany.customermanagement.util.FileUtil;
  
+import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +32,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -39,6 +42,7 @@ public class TransactionFormController implements Initializable{
     @FXML private TextField totalField;
     @FXML private ComboBox<String> paymentStatusField;
     @FXML private TextField paymentProofField;
+    @FXML private Button btnChooseFile;
     @FXML private TextArea notesField;
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
@@ -53,8 +57,15 @@ public class TransactionFormController implements Initializable{
  
     // Format tanggal dipakai konsisten: DatePicker (objek LocalDate) <-> database (String)
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
- 
+    private static final String PROOF_FOLDER = "data/bukti_pembayaran";
+
     private Transaction editingTransaction = null;
+    
+    // File asli yang baru dipilih user lewat tombol "Pilih File" (belum
+    // disalin ke folder aplikasi). Kalau user tidak pilih file baru
+    // (misal cuma mau edit Total-nya doang), ini tetap null, dan nama
+    // file yang lama (dari database) tetap dipakai apa adanya.
+    private File selectedProofFile = null;
  
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -80,6 +91,7 @@ public class TransactionFormController implements Initializable{
  
         paymentStatusField.getItems().addAll("Lunas", "Belum Lunas", "Sebagian");
  
+        btnChooseFile.setOnAction(this::handleChooseFile);
         btnSave.setOnAction(this::handleSave);
         btnCancel.setOnAction(this::handleCancel);
     }
@@ -101,6 +113,26 @@ public class TransactionFormController implements Initializable{
         paymentStatusField.setValue(transaction.getPaymentStatus());
         paymentProofField.setText(transaction.getPaymentProof());
         notesField.setText(transaction.getNotes());
+    }
+    
+    // Dipanggil waktu tombol "Pilih File" diklik
+    private void handleChooseFile(ActionEvent event) {
+ 
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Pilih Bukti Pembayaran");
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("Gambar & PDF", "*.png", "*.jpg", "*.jpeg", "*.pdf")
+        );
+ 
+        Stage stage = (Stage) btnChooseFile.getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
+ 
+        if (file != null) {
+            selectedProofFile = file;
+            // Tampilkan nama file aslinya dulu di field -- ini cuma tampilan
+            // sementara, nama final (setelah disalin) baru ditentukan waktu Simpan
+            paymentProofField.setText(file.getName());
+        }
     }
  
     private void handleSave(ActionEvent event) {
@@ -147,6 +179,21 @@ public class TransactionFormController implements Initializable{
         if (!valid) {
             return;
         }
+        
+        // Kalau user baru pilih file (selectedProofFile tidak null), salin
+        // dulu ke folder aplikasi, pakai nama filenya yang BARU (hasil salin).
+        // Kalau tidak pilih file baru, biarkan nilai paymentProofField apa
+        // adanya (nama file lama, kalau mode Edit; atau kosong, kalau mode Tambah dan memang tidak upload apa-apa).
+        String proofFileName = paymentProofField.getText();
+        if (selectedProofFile != null) {
+            String savedName = FileUtil.copyToAppFolder(selectedProofFile, PROOF_FOLDER);
+            if (savedName != null) {
+                proofFileName = savedName;
+            } else {
+                AlertUtil.showError("Gagal menyalin file bukti pembayaran.");
+                return;
+            }
+        }
  
         int customerId = customerField.getValue().getId();
         String dateStr = dateField.getValue().format(DATE_FORMAT);
@@ -158,7 +205,7 @@ public class TransactionFormController implements Initializable{
                     dateStr,
                     total,
                     paymentStatusField.getValue(),
-                    paymentProofField.getText(),
+                    proofFileName,
                     notesField.getText()
             );
             transactionService.save(newTransaction);
@@ -169,7 +216,7 @@ public class TransactionFormController implements Initializable{
             editingTransaction.setTransactionDate(dateStr);
             editingTransaction.setTotalAmount(total);
             editingTransaction.setPaymentStatus(paymentStatusField.getValue());
-            editingTransaction.setPaymentProof(paymentProofField.getText());
+            editingTransaction.setPaymentProof(proofFileName);
             editingTransaction.setNotes(notesField.getText());
  
             transactionService.update(editingTransaction);

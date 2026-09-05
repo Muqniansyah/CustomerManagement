@@ -83,7 +83,8 @@
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                            <children>
                               <Label prefWidth="80.0" styleClass="form-label" text="Bukti Bayar" />
-                              <TextField fx:id="paymentProofField" promptText="Nama file/nomor bukti (opsional)" styleClass="text-field" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="paymentProofField" promptText="Belum ada file dipilih" styleClass="text-field" editable="false" HBox.hgrow="ALWAYS" />
+                              <Button fx:id="btnChooseFile" mnemonicParsing="false" text="Pilih File" styleClass="cancel-button" />
                            </children>
                         </HBox>
 
